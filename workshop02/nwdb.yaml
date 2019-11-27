@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Namespace
+
+metadata:
+  name: myns
+  labels:
+    version: v1
+---
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: nwapp-config
+  namespace: myns
+
+data:
+  db_password: changeit
+
+---
+apiVersion: v1
+kind: Secret
+
+metadata:
+  name: nwapp-secret
+  namespace: myns
+
+data:
+  db_password: aGVsbG93b3JsZA==
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: northwind-deploy
+  namespace: myns
+  labels:
+    name: northwind
+    version: v1
+
+spec:
+  # number of pods
+  replicas: 1
+  minReadySeconds: 60
+  selector:
+    matchLabels:
+      name: northwind
+      version: v1
+  template:
+    #pod template
+    metadata:
+      name: northwind-pod
+      labels:
+        name: northwind
+        version: v1
+    spec:
+      containers:
+      - name: northwind-container
+        image: clintontay/mysqldb:v2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: nwapp-secret
+              key: db_password
+        ports:
+        - name: mysql-port
+          containerPort: 3306
+
