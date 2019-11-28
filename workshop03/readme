@@ -1,0 +1,25 @@
+Aappl v1 deployment
+
+svc-
+ stackupiss/northwind-app:v1
+ labels:
+ port:
+    3000
+
+ env:
+    DB_HOST - name fo db svc
+    DB_PORT - 3306
+    DB_USER - root
+    DB_PASSWORD - changeit
+
+svc2-
+ stackupiss/northwind-app:v2
+ labels:
+ port:
+    3000
+
+ env:
+    DB_HOST - name fo db svc
+    DB_PORT - 3306
+    DB_USER - root
+    DB_PASSWORD - changeit
